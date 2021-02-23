@@ -79,6 +79,8 @@ AbiesGauzere <- ggplot(test)+
   ylab(paste0("Budburst date (in days)"))+
   xlab("Year")
 
+
+
 FagusGauzere <- ggplot(test2)+
   geom_point(aes(x = year, y = mean), size = 3)+
   geom_line(aes(x = year, y = mean), linetype = "dashed")+
