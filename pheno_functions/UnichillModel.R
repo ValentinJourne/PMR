@@ -4,22 +4,22 @@
 #two options ; threshold or exp to define rate of chilling
 #latest version present on capsis platform 
 #from the PHENOFIT/CASTANEA exophysiologycal model. Translation of the PMP model 
-Unichill_Threshold_Chuine <- function(parameters, data, originClimateData, FunctionalType){
+Unichill_Chuine <- function(parameters, data, originClimateData, SubModel){
   
   library(tidyverse)
   
   # This is an effort to reproduce the Unified Model
   # of Chuine 2000 in full form (not simplified). Updated with last article from Gauzere et al, in Evolution Letters 2020
-  # threshold model for deciduous and sig for coniferous
+  # threshold model for deciduous and sig for coniferous works better
 
   
   # exit the routine if parameters are missing
-  if (length(parameters) != 6 & FunctionalType == "deciduous"){
-    stop("model parameter(s) out of range (too many or too few)- need 6 parameters for plant functional deciduous")
+  if (length(parameters) != 6 & SubModel == "threshold"){
+    stop("model parameter(s) out of range (too many or too few)- need 6 parameters for threshold SubModel")
   }  
   
-  if (length(parameters) != 8 & FunctionalType == "coniferous"){
-    stop("model parameter(s) out of range (too many or too few) - need 8 parameters for plant functional coniferous")
+  if (length(parameters) != 8 & SubModel == "unimodal"){
+    stop("model parameter(s) out of range (too many or too few) - need 8 parameters for unimodal SubModel")
   }
   
   if(length(colnames(data))<3){
@@ -28,7 +28,7 @@ Unichill_Threshold_Chuine <- function(parameters, data, originClimateData, Funct
   
   # extract the parameter values from the
   # par argument in a more human readable form
-  if (FunctionalType == "coniferous"){
+  if (SubModel == "unimodal"){
     
     t0 <- parameters[1] # starting date of ecodorimancy
     F_crit <- parameters[2] # Critical state of forcing
@@ -80,7 +80,7 @@ for (k in 1:length(vectoryear)){
     #calculate rate of chilling; cumulate low temperature
     #threshold model exept for coniferous use another exp model 
     
-    if (FunctionalType == "coniferous"){
+    if (SubModel == "unimodal"){
       
       R_c <- 1/(1+exp(a*(phenoyear$meanTemp-c)^2+b*(phenoyear$meanTemp-c)))
       phenoyear$R_c <- R_c
