@@ -35,7 +35,8 @@ Model information
     current year *n* to simulate leaf budburst of the year *n*.
 -   `DOY`: day of the year, in the following format 1 to X, where if you
     have for example two years, X should go to 730 days. The current
-    function can not work with DOY going to 365 days only.
+    function can not work with DOY going to 365 days only. \*\*\* works
+    also with basic DOY from 1 to 365\*\*\*
 -   `meanTemp`: mean temperature for each days in T°C. For each function
     you need to specify date of the origin of your climate file.
 
@@ -71,8 +72,7 @@ We first test here unichill model for
 ``` r
 #select data for the site of interest (here named DVX5)
 dataDvx5= VtxClimate %>% filter(plot == "DVX5")
-#need to specify origin data of the data in this particular format
-originClimateData <- "1959-01-01"
+
 #need to specify submodel of unichill 
 submodelFagus <- "threshold"
 
@@ -81,7 +81,7 @@ submodelFagus <- "threshold"
 parametersFagus = c(-62, 37.3, 13, 0.08, 73.7, 13)
 
 #Run unichill model in plot DVX5 for fagus and then add plot and species name 
-phenoFagusDvx5 <-   Unichill_Chuine(parametersFagus, dataDvx5, originClimateData, submodelFagus) %>% 
+phenoFagusDvx5 <-   Unichill_Chuine(parametersFagus, dataDvx5, submodelFagus) %>% 
   mutate(species = "Fagus", site = "DVX5")
 ```
 
@@ -97,7 +97,7 @@ submodelAbies <- "unimodal"
 parametersAbies = c(-67, 9, 15.2, 0.24, 144.6, 1.61, -27.1, -4.95)
 
 #Run unichill model in plot DVX5 for Abies and add details with dplyr
-phenoAbiesDvx5 <-   Unichill_Chuine(parametersAbies, dataDvx5, originClimateData, submodelAbies) %>% 
+phenoAbiesDvx5 <-   Unichill_Chuine(parametersAbies, dataDvx5, submodelAbies) %>% 
   mutate(species = "Abies", site = "DVX5")
 ```
 
@@ -116,14 +116,12 @@ unichill model. Parameters defined here came from Gauzere et al (2017)
 ``` r
 #select data for the site of interest (here named DVX5)
 dataDvx5= VtxClimate %>% filter(plot == "DVX5")
-#need to specify origin data of the data in this particular format
-originClimateData <- "1959-01-01"
 
 #species parameter here for Fagus sylvatica
-parametersFagusUniforc = c(13, 41.3, 0.06, 12.41)
+parametersFagusUniforc = c(13, 37.3, 0.06, 12.41)
 #order : t0, Fcrit, T50, dT
 #Run unichill model in plot DVX5 for fagus and then add plot and species name 
-phenoFagusDvx5 <-   Uniforc_Chuine(parametersFagusUniforc, dataDvx5, originClimateData) %>% 
+phenoFagusDvx5Unif <-   Uniforc_Chuine(parametersFagusUniforc, dataDvx5) %>% 
   mutate(species = "Fagus", site = "DVX5")
 ```
 

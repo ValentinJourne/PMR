@@ -4,7 +4,7 @@
 #two options ; threshold or exp to define rate of chilling
 #latest version present on capsis platform 
 #from the PHENOFIT/CASTANEA exophysiologycal model. Translation of the PMP model 
-Unichill_Chuine <- function(parameters, data, originClimateData, SubModel){
+Unichill_Chuine <- function(parameters, data, SubModel){
   
   library(tidyverse)
   
@@ -63,6 +63,10 @@ for (k in 1:length(vectoryear)){
     #do for each year the BBDay
     #select the current year and the previous year
     #reverse the number of days 
+    
+    originClimateData <- paste0(vectoryear[k-1], "-01-01")
+    
+    
     sdata <- data %>% filter(year %in% c(vectoryear[k], vectoryear[k-1])) %>% 
       mutate(vec = 1:nrow(.)) %>% 
       mutate(Date = as.Date(vec-1,  origin = originClimateData)) %>% 

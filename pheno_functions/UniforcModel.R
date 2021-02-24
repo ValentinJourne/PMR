@@ -3,7 +3,7 @@
 ###############################################
 #latest version present on capsis platform 
 #from the PHENOFIT/CASTANEA exophysiologycal model. Translation of the PMP model 
-Uniforc_Chuine <- function(parameters, data, originClimateData){
+Uniforc_Chuine <- function(parameters, data){
   
   library(tidyverse)
   # exit the routine if parameters are missing
@@ -31,6 +31,8 @@ Uniforc_Chuine <- function(parameters, data, originClimateData){
 
       #######################
       #now manage the forcing 
+      
+      originClimateData <- paste0(vectoryear[k], "-01-01")
       
       dataForcing <- data %>% filter(year %in% c(vectoryear[k])) %>% 
         mutate(vec = 1:nrow(.)) %>% 
