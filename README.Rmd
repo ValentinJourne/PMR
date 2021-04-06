@@ -126,7 +126,7 @@ The uniforc model is a simple model where temperature are accumlated the same ye
 dataDvx5= VtxClimate %>% filter(plot == "DVX5")
 
 #species parameter here for Fagus sylvatica
-parametersFagusUniforc = c(13, 37.3, 0.06, 12.41)
+parametersFagusUniforc = c(13, 41.3, 12.41, 0.06)
 #order : t0, Fcrit, T50, dT
 #Run unichill model in plot DVX5 for fagus and then add plot and species name 
 phenoFagusDvx5Unif <-   Uniforc_Chuine(parametersFagusUniforc, dataDvx5) %>% 
