@@ -87,7 +87,7 @@ parametersFagus = c(-62, 37.3, 13, 0.08, 73.7, 13)
 
 #Run unichill model in plot DVX5 for fagus and then add plot and species name 
 phenoFagusDvx5 <-   Unichill_Chuine(parametersFagus, dataDvx5, submodelFagus) %>% 
-  mutate(species = "Fagus", site = "DVX5")
+  mutate(species = "Fagus", site = "DVX5", model = "Unichillth")
 
 ```
 
@@ -103,7 +103,7 @@ parametersAbies = c(-67, 9, 15.2, 0.24, 144.6, 1.61, -27.1, -4.95)
 
 #Run unichill model in plot DVX5 for Abies and add details with dplyr
 phenoAbiesDvx5 <-   Unichill_Chuine(parametersAbies, dataDvx5, submodelAbies) %>% 
-  mutate(species = "Abies", site = "DVX5")
+  mutate(species = "Abies", site = "DVX5", model = "Unichill")
 
 ```
 
@@ -130,7 +130,7 @@ parametersFagusUniforc = c(13, 41.3, 12.41, 0.06)
 #order : t0, Fcrit, T50, dT
 #Run unichill model in plot DVX5 for fagus and then add plot and species name 
 phenoFagusDvx5Unif <-   Uniforc_Chuine(parametersFagusUniforc, dataDvx5) %>% 
-  mutate(species = "Fagus", site = "DVX5")
+  mutate(species = "Fagus", site = "DVX5", model = "Unifor")
 
 ```
 
@@ -139,6 +139,61 @@ phenoFagusDvx5Unif <-   Uniforc_Chuine(parametersFagusUniforc, dataDvx5) %>%
 phenoFagusDvx5Unif%>% 
   drop_na() %>% 
   ggplot(aes(x = year, y = BBDAY))+geom_point()+geom_line()
+
+```
+
+#### PGC model - Gauzere model
+The PGC model is a model with temperature and photoperiod effect to simulate budburst. This model showed robust prediction of leaf budburst of Fagus sylvatica. However here we need to add a new column with the latitude to calculated daylength (i.e. photoperiod). The model has 9 parameters : $t0$ ; $F_{crit}$ ; $T50$ ; $dT$ ; $T_{base}$ ; $C50$ ; $pR$ ; $dC$ ; $dP$ 
+
+
+```{r PGC fagus,results='hide'}
+#select data for the site of interest (here named DVX5)
+dataDvx5= VtxClimate %>% filter(plot == "DVX5")
+
+#species parameter here for Fagus sylvatica
+parametersFagusPGC = c(-65, 13.9, 10.5, 0.25, 11.9, 153.5, 1.76, -40, 0.44)
+latitudeDvx5 = 44.18 #in degree
+#order : $t0$ ; $F_{crit}$ ; $T50$ ; $dT$ ; $T_{base}$ ; $C50$ ; $pR$ ; $dC$ ; $dP$
+    # t0 <- parameters[1] # starting date of ecodorimancy
+    # F_crit <- parameters[2] # Critical state of forcing
+    # T50 <- parameters[3] # Mid-response temperature to forcing
+    # dT <- parameters[4] # Slope of the forcing response
+    # T_base <- parameters[5] # Threshold chilling temperature
+    # C50 <- parameters[6] # Mid-response photoperiod
+    # pR <- parameters[7] #boudaries mid repsonse photoperiod
+    # dC <- parameters[8] #slope photoperiod
+    # dP <- parameters[9] #slope growht competence
+#Run unichill model in plot DVX5 for fagus and then add plot and species name 
+phenoFagusDvx5PGC <-   PGC(parametersFagusPGC, dataDvx5, latitudeDvx5) %>% 
+  mutate(species = "Fagus", site = "DVX5", model = "PGC")
+
+```
+
+```{r sim PGC, echo = FALSE,results='hide',fig.keep='all', message=FALSE}
+
+phenoFagusDvx5PGC%>% 
+  drop_na() %>% 
+  ggplot(aes(x = year, y = BBDAY))+geom_point()+geom_line()
+
+```
+
+#### Comparison between the different models
+
+
+```{r sim comparison, echo = FALSE,results='hide',fig.keep='all', message=FALSE}
+#comparison of the three model for fagus 
+
+dfcomp <- rbind(phenoFagusDvx5, phenoFagusDvx5Unif, phenoFagusDvx5PGC)
+
+
+dfcomp%>% 
+  drop_na() %>% 
+  ggplot(aes(x = year, y = BBDAY, col = model))+geom_point()+geom_line()
+
+dfcomp%>% 
+  drop_na() %>% 
+  ggplot(aes(x = model, y = BBDAY, col = model))+geom_boxplot()
+
 
 ```
 
